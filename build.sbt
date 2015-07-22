@@ -5,8 +5,8 @@ name := "eris-widerow"
 scalaVersion := "2.10.5"
 
 libraryDependencies ++= Seq(
-  "com.pagerduty" %% "eris-core" % "0.1-SNAPSHOT" % "compile->compile;test->test",
-  "com.pagerduty" %% "widerow" % "0.1-SNAPSHOT")
+  "com.pagerduty" %% "eris-core" % "0.2" % "compile->compile;test->test",
+  "com.pagerduty" %% "widerow" % "0.2")
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % Test,
