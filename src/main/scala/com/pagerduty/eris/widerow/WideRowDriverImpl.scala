@@ -11,6 +11,19 @@ import scala.concurrent.{ExecutionContextExecutor, Future}
 /**
  * Eris implementation of WideRowDriver interface.
  *
+ * Example:
+ * {{{
+ * import com.pagerduty.eris.ColumnFamilyModel
+ * import com.pagerduty.eris.widerow.WideRowDriverImpl
+ *
+ * class WideRowIndex[RowKey, ColName, ColValue](
+ *    val columnFamilyModel: ColumnFamilyModel[RowKey, ColName, ColValue],
+ *    pageSize: Int = 25)(implicit executor: ExecutionContextExecutor)
+ *  extends com.pagerduty.widerow.WideRowIndex[RowKey, ColName, ColValue](
+ *    new WideRowDriverImpl(columnFamilyModel, executor),
+ *    pageSize)
+ * }}}
+ *
  * @param columnFamilyModel target column family model
  * @param executor executor context for async tasks
  * @tparam RowKey column family row key
