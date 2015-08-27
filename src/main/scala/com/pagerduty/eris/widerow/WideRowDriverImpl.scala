@@ -35,24 +35,6 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
     implicit val executor: ExecutionContextExecutor)
   extends WideRowDriver[RowKey, ColName, ColValue]
 {
-  /**
-   * Example:
-   * {{{
-   * def instrument(methodName: String): (Future[T] => Future[T]) = {
-   *   val start = System.currentTimeMillis()
-   *   (future: Future[T]) => {
-   *     future.onComplete { _ =>
-   *       val duration = System.currentTimeMillis() - start
-   *       Stats.recordMetrics(methodName, duration)
-   *     }
-   *     future
-   *   }
-   * }
-   * }}}
-   */
-  protected def instrument[T](methodName: String): (Future[T] => Future[T]) = {
-    identity
-  }
 
   def fetchData(
       rowKey: RowKey,
@@ -61,8 +43,6 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
       to: Option[ColName],
       limit: Int)
   : Future[IndexedSeq[Entry[RowKey, ColName, ColValue]]] = {
-    val intercept = instrument[IndexedSeq[Entry[RowKey, ColName, ColValue]]]("fetchData")
-
     val range = {
       val builder = new RangeBuilder().setLimit(limit).setReversed(!ascending)
       if (from.isDefined) builder.setStart(from.get, columnFamilyModel.colNameSerializer)
@@ -77,7 +57,7 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
       .withColumnRange(range)
       .executeAsync()
 
-    intercept(futureResult.map { operationResult =>
+    futureResult.map { operationResult =>
       val result = operationResult.getResult.toIndexedSeq
       for (column <- result) yield {
         Entry(
@@ -87,7 +67,7 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
             column.getValue(columnFamilyModel.colValueSerializer),
             Option(column.getTtl).filter(_ != 0)))
       }
-    })
+    }
   }
 
   def update(
@@ -96,7 +76,6 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
       remove: Iterable[ColName],
       insert: Iterable[EntryColumn[ColName, ColValue]])
   : Future[Unit] = {
-    val intercept = instrument[Unit]("update")
     val serializer = columnFamilyModel.colValueSerializer
 
     val batch = columnFamilyModel.keyspace.prepareMutationBatch()
@@ -111,6 +90,6 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
       rowBatch.putColumn(column.name, serializer.toByteBuffer(column.value), ttl)
     }
 
-    intercept(batch.executeAsync().map(_ => Unit))
+    batch.executeAsync().map(_ => Unit)
   }
 }
