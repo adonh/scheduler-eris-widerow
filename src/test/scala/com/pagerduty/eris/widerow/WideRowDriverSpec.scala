@@ -48,22 +48,22 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
       reloaded() shouldBe empty
 
       // Insert.
-      wait(driver.update(rowKey, false, Set.empty, columns))
+      wait(driver.update(rowKey, Set.empty, columns))
       reloaded() shouldBe entries
 
       // Remove.
       val removing = columns.take(columns.size / 2).map(_.name).toSet
-      wait(driver.update(rowKey, false, removing, Set.empty))
+      wait(driver.update(rowKey, removing, Set.empty))
       reloaded() shouldBe entries.filterNot(entry => removing.contains(entry.column.name))
 
       // Drop
-      wait(driver.update(rowKey, true, Set.empty, Set.empty))
+      wait(driver.deleteRow(rowKey))
       reloaded() shouldBe empty
     }
 
     "fetch data correctly" in { driver =>
       assert(columns.size == 5) // Hardcoded for this test.
-      wait(driver.update(rowKey, false, Set.empty, columns))
+      wait(driver.update(rowKey, Set.empty, columns))
 
       def expecting(ascending: Boolean, from: Option[Int], to: Option[Int], limit: Int) = {
         val bounded =

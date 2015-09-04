@@ -72,16 +72,12 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
 
   def update(
       rowKey: RowKey,
-      drop: Boolean,
       remove: Iterable[ColName],
       insert: Iterable[EntryColumn[ColName, ColValue]])
   : Future[Unit] = {
     val serializer = columnFamilyModel.colValueSerializer
-
     val batch = columnFamilyModel.keyspace.prepareMutationBatch()
-
     val rowBatch = batch.withRow(columnFamilyModel.columnFamily, rowKey)
-    if (drop) rowBatch.delete()
     for (colName <- remove) {
       rowBatch.deleteColumn(colName)
     }
@@ -89,7 +85,12 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
       val ttl = column.ttlSeconds.map(seconds => seconds: java.lang.Integer).orNull
       rowBatch.putColumn(column.name, serializer.toByteBuffer(column.value), ttl)
     }
+    batch.executeAsync().map(_ => Unit)
+  }
 
+  override def deleteRow(rowKey: RowKey): Future[Unit] = {
+    val batch = columnFamilyModel.keyspace.prepareMutationBatch()
+    batch.withRow(columnFamilyModel.columnFamily, rowKey).delete()
     batch.executeAsync().map(_ => Unit)
   }
 }
