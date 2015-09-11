@@ -2,7 +2,7 @@ package com.pagerduty.eris.widerow
 
 import java.util.logging.{Level, Logger}
 
-import com.pagerduty.eris.{ColumnFamilyModel, TestCluster}
+import com.pagerduty.eris.{ColumnFamilyModel, TestClusterCtx}
 import com.pagerduty.eris.schema.SchemaLoader
 import com.pagerduty.eris.serializers._
 import com.pagerduty.widerow.{Entry, EntryColumn, WideRowDriver}
@@ -19,7 +19,7 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
   type FixtureParam = WideRowDriver[String, Int, String]
 
   override def withFixture(test: OneArgTest): Outcome = {
-    val cluster = TestCluster.cluster
+    val cluster = TestClusterCtx.cluster
     val keyspace = cluster.getKeyspace("WideRowDriverSpec" + Thread.currentThread.getId)
     val columnFamily = ColumnFamilyModel[String, Int, String](keyspace, "driverTest")
     val schemaLoader = new SchemaLoader(cluster, Set(columnFamily.columnFamilyDef(cluster)))
