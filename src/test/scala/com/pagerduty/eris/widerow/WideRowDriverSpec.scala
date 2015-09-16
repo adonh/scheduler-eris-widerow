@@ -1,6 +1,6 @@
 package com.pagerduty.eris.widerow
 
-import com.pagerduty.eris.{ColumnFamilyModel, TestClusterCtx, TestLoggingConfig}
+import com.pagerduty.eris.{ColumnFamilyModel, TestClusterCtx}
 import com.pagerduty.eris.schema.SchemaLoader
 import com.pagerduty.eris.serializers._
 import com.pagerduty.widerow.{Entry, EntryColumn, WideRowDriver}
@@ -12,7 +12,6 @@ import scala.concurrent.duration.Duration
 
 
 class WideRowDriverSpec extends FreeSpec with Matchers {
-  TestLoggingConfig.setup()
   type FixtureParam = WideRowDriver[String, Int, String]
 
   override def withFixture(test: OneArgTest): Outcome = {
