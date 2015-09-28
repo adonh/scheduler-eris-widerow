@@ -1,5 +1,7 @@
 package com.pagerduty.eris.widerow
 
+import com.netflix.astyanax.model.Column
+import com.netflix.astyanax.serializers.LongSerializer
 import com.pagerduty.eris._
 import com.netflix.astyanax.util.RangeBuilder
 import com.pagerduty.widerow.{ Entry, EntryColumn, WideRowDriver }
@@ -36,6 +38,16 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
   extends WideRowDriver[RowKey, ColName, ColValue]
 {
 
+  // This is a workaround to support counter columns that only implement getLongValue()
+  private def readValue(column: Column[ColName]): ColValue = {
+    if (columnFamilyModel.colValueSerializer.isInstanceOf[LongSerializer]) {
+      column.getLongValue().asInstanceOf[ColValue]
+    }
+    else {
+      column.getValue(columnFamilyModel.colValueSerializer)
+    }
+  }
+
   def fetchData(
       rowKey: RowKey,
       ascending: Boolean,
@@ -64,7 +76,7 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
           rowKey,
           EntryColumn(
             column.getName,
-            column.getValue(columnFamilyModel.colValueSerializer),
+            readValue(column),
             Option(column.getTtl).filter(_ != 0)))
       }
     }

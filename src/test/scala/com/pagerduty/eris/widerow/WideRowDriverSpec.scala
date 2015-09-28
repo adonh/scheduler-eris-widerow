@@ -21,6 +21,7 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
     val schemaLoader = new SchemaLoader(cluster, Set(columnFamily.columnFamilyDef(cluster)))
 
     try {
+      schemaLoader.dropSchema()
       schemaLoader.loadSchema()
       val driver = new WideRowDriverImpl(columnFamily, global)
       withFixture(test.toNoArgTest(driver))
