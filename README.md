@@ -16,7 +16,7 @@ resolvers += Resolver.sonatypeRepo("public")
 
 Adding the dependency to your SBT build file:
 ```scala
-libraryDependencies += "com.pagerduty" %% "eris-widerow" % "1.3.1"
+libraryDependencies += "com.pagerduty" %% "eris-widerow" % "1.3.2"
 ```
 
 ## Contact
