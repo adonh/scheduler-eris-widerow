@@ -9,8 +9,12 @@ Eris-widerow is an implementation of [WideRow API](https://github.com/PagerDuty/
 
 ## Installation
 
-This library is published to the Sonatype OSS Maven Repository, which is configured in SBT by default. To add the dependency to your SBT build file:
+This library is published to the Sonatype OSS Maven Repository:
+```scala
+resolvers += Resolver.sonatypeRepo("public")
+```
 
+Adding the dependency to your SBT build file:
 ```scala
 libraryDependencies += "com.pagerduty" %% "eris-widerow" % "1.3.1"
 ```
