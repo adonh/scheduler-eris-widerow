@@ -1,4 +1,4 @@
-# eris-widerow [![Build Status](https://travis-ci.org/PagerDuty/eris-widerow.svg)](https://travis-ci.org/PagerDuty/eris-widerow)
+# eris-widerow [![Build Status](https://travis-ci.org/PagerDuty/eris-widerow.svg?branch=master)](https://travis-ci.org/PagerDuty/eris-widerow/builds)
 
 This is an open source project!
 
