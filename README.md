@@ -1,4 +1,4 @@
-# eris-widerow [![Build Status](https://travis-ci.org/PagerDuty/eris-widerow.svg)](https://travis-ci.org/PagerDuty/eris-widerow)
+# eris-widerow [![Build Status](https://travis-ci.org/PagerDuty/eris-widerow.svg?branch=master)](https://travis-ci.org/PagerDuty/eris-widerow/builds)
 
 This is an open source project!
 
@@ -16,7 +16,7 @@ resolvers += "bintray-pagerduty-oss-maven" at "https://dl.bintray.com/pagerduty/
 
 Adding the dependency to your SBT build file:
 ```scala
-libraryDependencies += "com.pagerduty" %% "eris-widerow" % "1.4.0"
+libraryDependencies += "com.pagerduty" %% "eris-widerow" % "1.4.1"
 ```
 
 ## Contact
