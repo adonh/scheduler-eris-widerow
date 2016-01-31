@@ -34,8 +34,7 @@ import com.netflix.astyanax.util.RangeBuilder
 import com.pagerduty.widerow.{ Entry, EntryColumn, WideRowDriver }
 import scala.collection.JavaConversions._
 import com.pagerduty.eris.FutureConversions._
-import scala.concurrent.{ExecutionContextExecutor, Future}
-
+import scala.concurrent.{ ExecutionContextExecutor, Future }
 
 /**
  * Eris implementation of WideRowDriver interface.
@@ -60,28 +59,27 @@ import scala.concurrent.{ExecutionContextExecutor, Future}
  * @tparam ColValue column family columna value
  */
 class WideRowDriverImpl[RowKey, ColName, ColValue](
-    val columnFamilyModel: ColumnFamilyModel[RowKey, ColName, ColValue],
-    implicit val executor: ExecutionContextExecutor)
-  extends WideRowDriver[RowKey, ColName, ColValue]
-{
+  val columnFamilyModel: ColumnFamilyModel[RowKey, ColName, ColValue],
+  implicit val executor: ExecutionContextExecutor
+)
+    extends WideRowDriver[RowKey, ColName, ColValue] {
 
   // This is a workaround to support counter columns that only implement getLongValue()
   private def readValue(column: Column[ColName]): ColValue = {
     if (columnFamilyModel.colValueSerializer.isInstanceOf[LongSerializer]) {
       column.getLongValue().asInstanceOf[ColValue]
-    }
-    else {
+    } else {
       column.getValue(columnFamilyModel.colValueSerializer)
     }
   }
 
   def fetchData(
-      rowKey: RowKey,
-      ascending: Boolean,
-      from: Option[ColName],
-      to: Option[ColName],
-      limit: Int)
-  : Future[IndexedSeq[Entry[RowKey, ColName, ColValue]]] = {
+    rowKey: RowKey,
+    ascending: Boolean,
+    from: Option[ColName],
+    to: Option[ColName],
+    limit: Int
+  ): Future[IndexedSeq[Entry[RowKey, ColName, ColValue]]] = {
     val range = {
       val builder = new RangeBuilder().setLimit(limit).setReversed(!ascending)
       if (from.isDefined) builder.setStart(from.get, columnFamilyModel.colNameSerializer)
@@ -104,16 +102,18 @@ class WideRowDriverImpl[RowKey, ColName, ColValue](
           EntryColumn(
             column.getName,
             readValue(column),
-            Option(column.getTtl).filter(_ != 0)))
+            Option(column.getTtl).filter(_ != 0)
+          )
+        )
       }
     }
   }
 
   def update(
-      rowKey: RowKey,
-      remove: Iterable[ColName],
-      insert: Iterable[EntryColumn[ColName, ColValue]])
-  : Future[Unit] = {
+    rowKey: RowKey,
+    remove: Iterable[ColName],
+    insert: Iterable[EntryColumn[ColName, ColValue]]
+  ): Future[Unit] = {
     val serializer = columnFamilyModel.colValueSerializer
     val batch = columnFamilyModel.keyspace.prepareMutationBatch()
     val rowBatch = batch.withRow(columnFamilyModel.columnFamily, rowKey)
