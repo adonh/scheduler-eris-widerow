@@ -27,17 +27,15 @@
 
 package com.pagerduty.eris.widerow
 
-
 import com.netflix.astyanax.serializers.ComparatorType
-import com.pagerduty.eris.{ColumnFamilySettings, ColumnFamilyModel, TestClusterCtx}
+import com.pagerduty.eris.{ ColumnFamilySettings, ColumnFamilyModel, TestClusterCtx }
 import com.pagerduty.eris.schema.SchemaLoader
 import com.pagerduty.eris.serializers._
 import com.pagerduty.widerow.EntryColumn
-import org.scalatest.{Matchers, FreeSpec}
+import org.scalatest.{ Matchers, FreeSpec }
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-
 
 class LongAndCounterSpec extends FreeSpec with Matchers {
   val cluster = TestClusterCtx.cluster

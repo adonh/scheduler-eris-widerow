@@ -27,16 +27,15 @@
 
 package com.pagerduty.eris.widerow
 
-import com.pagerduty.eris.{ColumnFamilyModel, TestClusterCtx}
+import com.pagerduty.eris.{ ColumnFamilyModel, TestClusterCtx }
 import com.pagerduty.eris.schema.SchemaLoader
 import com.pagerduty.eris.serializers._
-import com.pagerduty.widerow.{Entry, EntryColumn, WideRowDriver}
-import org.scalatest.{Outcome, Matchers}
+import com.pagerduty.widerow.{ Entry, EntryColumn, WideRowDriver }
+import org.scalatest.{ Outcome, Matchers }
 import org.scalatest.fixture.FreeSpec
-import scala.concurrent.{Future, Await}
+import scala.concurrent.{ Future, Await }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-
 
 class WideRowDriverSpec extends FreeSpec with Matchers {
   type FixtureParam = WideRowDriver[String, Int, String]
@@ -52,8 +51,7 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
       schemaLoader.loadSchema()
       val driver = new WideRowDriverImpl(columnFamily, global)
       withFixture(test.toNoArgTest(driver))
-    }
-    finally {
+    } finally {
       schemaLoader.dropSchema()
     }
   }
@@ -66,7 +64,7 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
 
   "Eris wide row driver should" - {
     "insert, delete, and drop correctly" in { driver =>
-      def reloaded() = wait(driver.fetchData(rowKey, true, None, None, columns.size*10))
+      def reloaded() = wait(driver.fetchData(rowKey, true, None, None, columns.size * 10))
 
       // Sanity check.
       reloaded() shouldBe empty
@@ -95,8 +93,7 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
             val init = columns
             val lowerBound = if (from.isDefined) init.dropWhile(_.name < from.get) else init
             if (to.isDefined) lowerBound.takeWhile(_.name <= to.get) else lowerBound
-          }
-          else {
+          } else {
             val init = columns.reverse
             val lowerBound = if (from.isDefined) init.dropWhile(_.name > from.get) else init
             if (to.isDefined) lowerBound.takeWhile(_.name >= to.get) else lowerBound
@@ -115,7 +112,7 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
             val afterLast = columns(last).name + 1
 
             Seq(Int.MinValue, Int.MaxValue, beforeFirst, afterLast) ++
-            Seq(columns(0), columns(1), columns(last - 1), columns(last)).map(_.name)
+              Seq(columns(0), columns(1), columns(last - 1), columns(last)).map(_.name)
           }.map(Some(_))
 
         assert(from.size == 9)
@@ -131,19 +128,19 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
           val first = n
           val last = 1
           val count = n
-          (first + last)*count/2 // Arithmetic progression sum.
+          (first + last) * count / 2 // Arithmetic progression sum.
         }
 
         // 8*2 are combinations formed with None as one of the bounds,
         // + 1 is when both bounds are None.
-        val boundCombinations = definedBoundCount(8) + 8*2 + 1
+        val boundCombinations = definedBoundCount(8) + 8 * 2 + 1
 
         // 2 ascending/descending directions
         // 5 limit values
-        val total = 2*boundCombinations*5
+        val total = 2 * boundCombinations * 5
       }
 
-      def validBounds(ascending: Boolean, fromOp: Option[Int], toOp: Option[Int]) :Boolean = {
+      def validBounds(ascending: Boolean, fromOp: Option[Int], toOp: Option[Int]): Boolean = {
         (fromOp, toOp) match {
           case (Some(from), Some(to)) if ascending => to >= from
           case (Some(from), Some(to)) if !ascending => to <= from
@@ -166,11 +163,12 @@ class WideRowDriverSpec extends FreeSpec with Matchers {
         if (loaded != expected) {
           fail(
             "Test failed with" +
-            " ascending=" + ascending +
-            ", from=" + from +
-            ", to=" + to +
-            ", limit=" + limit +
-            ".")
+              " ascending=" + ascending +
+              ", from=" + from +
+              ", to=" + to +
+              ", limit=" + limit +
+              "."
+          )
         }
       }
 
