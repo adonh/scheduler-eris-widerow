@@ -1,3 +1,8 @@
+1.4.2
+========
+
+  * Separated integration tests from unit tests
+
 1.4.1
 ========
 
